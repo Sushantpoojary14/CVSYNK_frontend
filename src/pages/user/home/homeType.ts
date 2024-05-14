@@ -1,7 +1,11 @@
 export type jobList = {
-    job_tile:string,
+    job_title:string,
     job_description:string,
     company_name:string,
-    location:string,
+    state:string,
+    job_requirement:string,
+    job_category:string,
+    city:string,
+    user_id:number,
     posted_date:string,
 }

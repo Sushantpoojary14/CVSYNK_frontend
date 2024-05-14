@@ -5,11 +5,26 @@ import Navbar from "react-bootstrap/Navbar";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { OCAuthModel, logout } from "../../redux/slice/authslice";
 import { NavLink } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import tokenAxios from "../../hooks/tokenAxios";
 const Header = () => {
-  const user = useAppSelector((state) => state.loginReducers.value);
+  const user = useAppSelector((state) => state.loginReducers.user);
   const dispatch = useAppDispatch();
   console.log(user);
+  const mutation = useMutation({
+    mutationFn: async () => {
+      return await tokenAxios.post('/logout')
+    },
+    onSuccess: (res) => {
+      if(res.status===200 ){
 
+        dispatch(logout());
+      }
+    },
+    onError:(err)=>{
+      console.log(err);
+    }
+  })
   return (
     <>
       <Navbar expand={"md"} bg="primary" className="mb-3">
@@ -39,7 +54,6 @@ const Header = () => {
                     <NavLink
                       className="text-black "
                       style={({ isActive }) => {
-                        console.log(isActive);
 
                         return {
                           textDecoration: isActive ? "underline" : "none",
@@ -86,14 +100,15 @@ const Header = () => {
                     >
                       Jobs
                     </NavLink>
-                    <a
+                    <NavLink
                       className="text-black text-decoration-none "
                       onClick={() => {
-                        dispatch(logout());
+                        mutation.mutate();
                       }}
+                      to={""}
                     >
                       Logout
-                    </a>
+                    </NavLink>
                   </Nav>
                 ) : (
                   <Nav className="d-flex align-items-center  justify-content-end flex-grow-1 pe-3 text-light gap-4">
