@@ -10,7 +10,7 @@ import tokenAxios from "../../hooks/tokenAxios";
 const Header = () => {
   const user = useAppSelector((state) => state.loginReducers.user);
   const dispatch = useAppDispatch();
-  console.log(user);
+
   const mutation = useMutation({
     mutationFn: async () => {
       return await tokenAxios.post('/logout')
@@ -39,15 +39,15 @@ const Header = () => {
             placement="end"
           >
             <Offcanvas.Body>
-              <Form className="d-flex  p-0">
-                <Form.Control
-                  type="text"
+              {/* <Form className="d-flex  p-0">
+                <Form.Control */}
+                  {/* type="text"
                   className="ms-5 rounded-0 rounded-start-1 bg-light"
-                />
-                <div className="bg-light text-secondary rounded-0 rounded-end-1  rounded-left  p-1">
+                /> */}
+                {/* <div className="bg-light text-secondary rounded-0 rounded-end-1  rounded-left  p-1">
                   <Button className="">search</Button>
-                </div>
-              </Form>
+                </div> */}
+              {/* </Form> */}
               <>
                 {user ? (
                   <Nav className="d-flex align-items-center  justify-content-end flex-grow-1 pe-3 text-light gap-4">
@@ -78,7 +78,7 @@ const Header = () => {
                     <NavLink
                       className="text-black "
                       style={({ isActive }) => {
-                        console.log(isActive);
+  
 
                         return {
                           textDecoration: isActive ? "underline" : "none",
