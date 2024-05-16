@@ -1,10 +1,13 @@
 
 import { configureStore } from "@reduxjs/toolkit"
-import { authReducer } from "./slice/authslice"
+import { authReducer, loginReducers } from "./slice/authslice"
+import { jobListReducers } from "./slice/appslice"
 
 export const store = configureStore({
   reducer: {
-    authReducer:authReducer
+    authReducer:authReducer,
+    loginReducers:loginReducers,
+    jobListReducers:jobListReducers
   },
 })
 

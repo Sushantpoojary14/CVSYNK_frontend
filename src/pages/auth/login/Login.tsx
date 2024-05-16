@@ -1,93 +1,99 @@
-import { useState } from 'react';
-import Button from 'react-bootstrap/Button';
-import Col from 'react-bootstrap/Col';
-import Form from 'react-bootstrap/Form';
-import InputGroup from 'react-bootstrap/InputGroup';
-import Row from 'react-bootstrap/Row';
+
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+import Row from "react-bootstrap/Row";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { useAppDispatch } from "../../../redux/hooks";
+import { OCAuthModel, login } from "../../../redux/slice/authslice";
+import baseAxios from "../../../hooks/axiosBaseURL";
+import { useMutation } from "@tanstack/react-query";
+
+type FormValues = {
+  email: string;
+  password: string;
+};
 
 const Login = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormValues>();
+  const dispatch = useAppDispatch();
+  // const user = useAppSelector((state)=>state.loginReducers.user);
+  const mutation = useMutation({
+    mutationFn: async (data:FormValues) => {
+      return await baseAxios.post('/login', data)
+    },
+    onSuccess: (res) => {
+      console.log(res);
+      
+      const user = res.data?.user;
+      const token = res.data?.token;
+      if (user && token) {
+        dispatch(login({user:user,token:token}));
+        dispatch(OCAuthModel());
+      }
+    },
+    onError:(err)=>{
+      console.log(err);
+    }
+  })
+  const onSubmit: SubmitHandler<FormValues> = (data:FormValues) => {
 
-    const [validated, setValidated] = useState<boolean>(false);
-
-    const handleSubmit = (event:React.FormEvent) => {
+   mutation.mutate(data)
+  };
+ console.log(mutation.isPending);
  
-     
-  
-      setValidated(true);
-    };
   return (
-    <Form noValidate validated={validated} onSubmit={handleSubmit}>
-    <Row className="mb-3">
-      <Form.Group as={Col} md="4" controlId="validationCustom01">
-        <Form.Label>First name</Form.Label>
-        <Form.Control
-          required
-          type="text"
-          placeholder="First name"
-          defaultValue="Mark"
-        />
-        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-      </Form.Group>
-      <Form.Group as={Col} md="4" controlId="validationCustom02">
-        <Form.Label>Last name</Form.Label>
-        <Form.Control
-          required
-          type="text"
-          placeholder="Last name"
-          defaultValue="Otto"
-        />
-        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-      </Form.Group>
-      <Form.Group as={Col} md="4" controlId="validationCustomUsername">
-        <Form.Label>Username</Form.Label>
-        <InputGroup hasValidation>
-          <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
-          <Form.Control
-            type="text"
-            placeholder="Username"
-            aria-describedby="inputGroupPrepend"
-            required
-          />
-          <Form.Control.Feedback type="invalid">
-            Please choose a username.
-          </Form.Control.Feedback>
-        </InputGroup>
-      </Form.Group>
-    </Row>
-    <Row className="mb-3">
-      <Form.Group as={Col} md="6" controlId="validationCustom03">
-        <Form.Label>City</Form.Label>
-        <Form.Control type="text" placeholder="City" required />
-        <Form.Control.Feedback type="invalid">
-          Please provide a valid city.
-        </Form.Control.Feedback>
-      </Form.Group>
-      <Form.Group as={Col} md="3" controlId="validationCustom04">
-        <Form.Label>State</Form.Label>
-        <Form.Control type="text" placeholder="State" required />
-        <Form.Control.Feedback type="invalid">
-          Please provide a valid state.
-        </Form.Control.Feedback>
-      </Form.Group>
-      <Form.Group as={Col} md="3" controlId="validationCustom05">
-        <Form.Label>Zip</Form.Label>
-        <Form.Control type="text" placeholder="Zip" required />
-        <Form.Control.Feedback type="invalid">
-          Please provide a valid zip.
-        </Form.Control.Feedback>
-      </Form.Group>
-    </Row>
-    <Form.Group className="mb-3">
-      <Form.Check
-        required
-        label="Agree to terms and conditions"
-        feedback="You must agree before submitting."
-        feedbackType="invalid"
-      />
-    </Form.Group>
-    <Button type="submit">Submit form</Button>
-  </Form>
-  )
-}
+    <form onSubmit={handleSubmit(onSubmit)}>
+          {mutation.data?.status != 200 && (
+        <>
+          {mutation.data?.data?.message&& (
+            <Form.Text className="text-danger mb-2  d-block">
+            Email and Password does not match
+            </Form.Text>
+          )}
 
-export default Login
+        </>
+      )}
+      <Row className="mb-3">
+        <Form.Group >
+          <Form.Label>Email</Form.Label>
+          <Form.Control
+            type="email"
+            placeholder="Email"
+            {...register("email", {
+              required: true,
+              
+            })}
+      
+          />
+          {errors?.email && (
+            <Form.Text className="text-danger ">{`Email is required*`}</Form.Text>
+          )}
+        </Form.Group>
+      </Row>
+      <Row className="mb-3">
+        <Form.Group >
+          <Form.Label>Password</Form.Label>
+          <Form.Control
+            type="password"
+            placeholder="Password"
+            {...register("password", {
+              required: true,
+            })}
+            
+          />
+          {errors?.password && (
+            <Form.Text className="text-danger ">{`Password is required*`}</Form.Text>
+          )}
+        </Form.Group>
+      </Row>
+      <Form.Group className="mb-3"></Form.Group>
+      <Button type="submit" >Sign In</Button>
+    </form>
+  );
+};
+
+export default Login;
