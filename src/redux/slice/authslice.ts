@@ -9,13 +9,13 @@ const initialState: authMState = {
   value: false,
 };
 
-type loginnup = { token: string | null; user: string  | null };
+type loginnup = { token: string | null; user: any  | null };
 
 const userString = localStorage.getItem("user");
 const tokenString = localStorage.getItem("token");
 const LLinitialState: loginnup = {
-  token: userString ? JSON.parse(userString) : null,
-  user: tokenString ? tokenString : null,
+  user: userString ? JSON.parse(userString) : null,
+  token:tokenString ? tokenString : null,
 };
 
 export const authSlice = createSlice({

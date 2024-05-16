@@ -27,7 +27,7 @@ function App() {
   );
 }
 export const PrivateRoutes = () => {
-  const user = useAppSelector((state) => state.loginReducers.value);
+  const user = useAppSelector((state) => state.loginReducers.user);
 return (
   user ? <Outlet/> : <Navigate to='/'/>
   )

@@ -19,4 +19,5 @@ export type jobList = {
         state_name: string
     }
 }
+
 export type indexType = { start: number; end: number };

@@ -17,7 +17,7 @@ const Pagination = ({
   const next = (reset: boolean = false) => {
     if (post_count != 0) {
       if (reset) {
-        setShowIndex(post_count / 5);
+        setShowIndex(round(post_count / 5));
         setIndex(() => {
           return { start: post_count - 5, end: post_count };
         });
