@@ -75,7 +75,7 @@ const Header = () => {
                     >
                       Post
                     </NavLink>
-                    <NavLink
+                    {/* <NavLink
                       className="text-black "
                       style={({ isActive }) => {
   
@@ -87,7 +87,7 @@ const Header = () => {
                       to="/profile"
                     >
                       Profile
-                    </NavLink>
+                    </NavLink> */}
 
                     <NavLink
                       className="text-black "
